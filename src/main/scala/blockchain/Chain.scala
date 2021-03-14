@@ -1,0 +1,48 @@
+package zicoin
+package blockchain
+
+import crypto.Crypto
+import io.circe.generic.semiauto.*
+import io.circe.{Codec, Decoder, Encoder, Json}
+import io.circe.syntax.*
+import java.security.InvalidParameterException
+
+sealed trait Chain: //derives Codec.AsObject:
+  val index: Int
+  val hash: Hash
+  val values: List[Transaction]
+  val proof: Long
+  val timestamp: Long
+
+  def ::(link: Chain): Chain = link match
+    case l:ChainLink => ChainLink(l.index, l.proof, l.values, this.hash, this)
+    case _ => throw new InvalidParameterException("Cannot add invalid link to chain")
+
+object Chain:
+  def apply[T](b: Chain*): Chain = {
+    b match
+      case Seq() => EmptyChain
+      case Seq(l, xs @ _*) =>
+        val link = l.asInstanceOf[ChainLink]
+        ChainLink(link.index, link.proof, link.values, link.previousHash, apply(xs:_*))
+  }
+
+// Also genesis block
+case object EmptyChain extends Chain:
+  val index: Int = 0
+  val hash: Hash = "1"
+  val values: List[Transaction] = Nil
+  val proof: Long = 0
+  val timestamp: Long = 0
+
+case class ChainLink( index: Int,
+                      proof: Long,
+                      values: List[Transaction],
+                      previousHash: Hash = "",
+                      tail: Chain = EmptyChain,
+                      timestamp: Long = System.currentTimeMillis()
+                    ) extends Chain:
+  val hash: Hash = Crypto.sha256Hash(summon[Encoder[ChainLink]](this).asJson.toString)
+
+given Encoder[Chain] = deriveEncoder[Chain]
+given Encoder[ChainLink] = deriveEncoder[ChainLink]
