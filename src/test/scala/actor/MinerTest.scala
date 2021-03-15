@@ -7,23 +7,24 @@ import akka.actor.typed.scaladsl.AskPattern._
 import akka.pattern.StatusReply
 import akka.util.Timeout
 import exception.*
+import proof.Proof
 
 class MinerSuite extends munit.FunSuite:
   val testKit = ActorTestKit()
 
   test("Should be ready when requested") {
     val miner = testKit.spawn(Miner())
-    val probe = testKit.createTestProbe[StatusReply[Long]]()
+    val probe = testKit.createTestProbe[StatusReply[Proof]]()
 
     /// minor should be ready
     miner ! Miner.Mine("1", probe.ref)
-    probe.expectMessage(StatusReply.success(7178))
+    probe.expectMessage(StatusReply.success(Proof(7178)))
   }
 
   test("Should be busy while mining a new block") {
     val miner = testKit.spawn(Miner())
-    val probe1 = testKit.createTestProbe[StatusReply[Long]]()
-    val probe2 = testKit.createTestProbe[StatusReply[Long]]()
+    val probe1 = testKit.createTestProbe[StatusReply[Proof]]()
+    val probe2 = testKit.createTestProbe[StatusReply[Proof]]()
 
     /// minor should be ready
     miner ! Miner.Mine("1", probe1.ref)

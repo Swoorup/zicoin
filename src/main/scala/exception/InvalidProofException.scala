@@ -2,7 +2,8 @@ package zicoin
 package exception
 
 import blockchain.Hash
+import proof.Proof
 
 case class InvalidProofException(
     hash: Hash, 
-    proof: Long) extends Exception()
+    proof: Proof) extends Exception()

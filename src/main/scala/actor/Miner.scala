@@ -6,7 +6,7 @@ import akka.pattern.StatusReply
 import akka.actor.typed.scaladsl.{ ActorContext, Behaviors, TimerScheduler }
 import akka.actor.typed.{ ActorRef, Behavior }
 import blockchain.*
-import proof.ProofOfWork
+import proof.{ProofOfWork, Proof}
 import exception.{InvalidProofException, MinerBusyException}
 import scala.concurrent.{Future, ExecutionContext}
 
@@ -14,8 +14,8 @@ object Miner:
   sealed trait MinerMessage
 
   enum Command extends MinerMessage: 
-    case Validate(hash: Hash, proof: Long, replyTo: ActorRef[StatusReply[Done]]) 
-    case Mine(hash: Hash, replyTo: ActorRef[StatusReply[Long]]) 
+    case Validate(hash: Hash, proof: Proof, replyTo: ActorRef[StatusReply[Done]]) 
+    case Mine(hash: Hash, replyTo: ActorRef[StatusReply[Proof]]) 
   export Command.*
 
   private case object Ready extends MinerMessage

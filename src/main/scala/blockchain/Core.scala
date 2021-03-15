@@ -3,4 +3,3 @@ package blockchain
 
 type Address = String
 type Hash = String
-
