@@ -1,7 +1,7 @@
 package zicoin
 package blockchain
 
-import common.{Hash, Timestamp}
+import common.{Hash, NewIntType, Timestamp}
 import crypto.Crypto
 import io.circe.generic.semiauto.*
 import io.circe.{Codec, Decoder, Encoder, Json}
@@ -10,8 +10,13 @@ import proof.ProofOfWork.Proof
 
 import java.security.InvalidParameterException
 
+object BlockIndex extends NewIntType
+type BlockIndex = BlockIndex.Type
+extension (n: BlockIndex)
+  inline def increment(): BlockIndex = BlockIndex(n.value + 1)
+
 sealed trait Chain: //derives Codec.AsObject:
-  val index: Int
+  val index: BlockIndex
   val hash: Hash
   val values: List[Transaction]
   val proof: Proof
@@ -32,13 +37,13 @@ object Chain:
 
 // Also genesis block
 case object EmptyChain extends Chain:
-  val index: Int = 0
+  val index: BlockIndex = BlockIndex(0)
   val hash: Hash = Hash("1")
   val values: List[Transaction] = Nil
   val proof: Proof = Proof(0)
   val timestamp: Timestamp = 0
 
-case class ChainLink( index: Int,
+case class ChainLink( index: BlockIndex,
                       proof: Proof,
                       values: List[Transaction],
                       previousHash: Hash = Hash(""),

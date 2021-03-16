@@ -30,13 +30,13 @@ class BlockchainSuite extends munit.FunSuite:
   
   test("Correctly initiate an empty Chain") {
     val blockchain = testKit.spawn(Blockchain(EmptyChain, NodeId("test")))
-    val probe = testKit.createTestProbe[Chain|Int|Hash]()
+    val probe = testKit.createTestProbe[Chain|BlockIndex|Hash]()
 
     blockchain ! Blockchain.GetChain(probe.ref)
     probe.expectMessage(1000 millis, EmptyChain)
 
     blockchain ! Blockchain.GetLastIndex(probe.ref)
-    probe.expectMessage(1000 millis, 0)
+    probe.expectMessage(1000 millis, BlockIndex(0))
 
     blockchain ! Blockchain.GetLastHash(probe.ref)
     probe.expectMessage(1000 millis, Hash("1"))
@@ -44,19 +44,19 @@ class BlockchainSuite extends munit.FunSuite:
   
   test("correctly add a new block") {
     val blockchain = testKit.spawn(Blockchain(EmptyChain, NodeId("test")))
-    val probe = testKit.createTestProbe[Chain|Int|Hash]()
+    val probe = testKit.createTestProbe[Chain|BlockIndex|Hash]()
 
     // a sends 1L unit to b
     val transactions = List(Transaction("a", "b", 1L))
     val proof = Proof(1L)
     blockchain ! Blockchain.AddBlockCommand(transactions, proof, txnDate, probe.ref)
-    probe.expectMessage(1000 millis, 1)
+    probe.expectMessage(1000 millis, BlockIndex(1))
 
     blockchain ! Blockchain.GetChain(probe.ref)
     probe.expectMessageType[ChainLink](1000 millis)
 
     blockchain ! Blockchain.GetLastIndex(probe.ref)
-    probe.expectMessage(1000 millis, 1)
+    probe.expectMessage(1000 millis, BlockIndex(1))
 
     blockchain ! Blockchain.GetLastHash(probe.ref)
     probe.expectMessage(1000 millis, Hash("9cd156b1af8e8ff6848dd2187a940a079d85da62edc301e0c93bd0582a1fecf3"))
@@ -64,10 +64,10 @@ class BlockchainSuite extends munit.FunSuite:
   
   test("correctly recover from a snapshot") {
     val blockchain = testKit.spawn(Blockchain(EmptyChain, NodeId("test")))
-    val probe = testKit.createTestProbe[Chain|Int|Hash]()
+    val probe = testKit.createTestProbe[Chain|BlockIndex|Hash]()
 
     blockchain ! Blockchain.GetLastIndex(probe.ref)
-    probe.expectMessage(1000 millis, 1)
+    probe.expectMessage(1000 millis, BlockIndex(1))
 
     blockchain ! Blockchain.GetLastHash(probe.ref)
     probe.expectMessage(1000 millis, Hash("9cd156b1af8e8ff6848dd2187a940a079d85da62edc301e0c93bd0582a1fecf3"))

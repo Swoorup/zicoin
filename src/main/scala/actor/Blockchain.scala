@@ -21,10 +21,10 @@ object Blockchain:
     case BlockAddedEvent(transactions: List[Transaction], proof: Proof, timestamp: Timestamp)
 
   enum BlockchainCommand:
-    case AddBlockCommand(transactions: List[Transaction], proof: Proof, timestamp: Timestamp, replyTo: ActorRef[Int]) 
+    case AddBlockCommand(transactions: List[Transaction], proof: Proof, timestamp: Timestamp, replyTo: ActorRef[BlockIndex]) 
     case GetChain(replyTo: ActorRef[Chain])
     case GetLastHash(replyTo: ActorRef[Hash])
-    case GetLastIndex(replyTo: ActorRef[Int])
+    case GetLastIndex(replyTo: ActorRef[BlockIndex])
   
   export BlockchainCommand.*, BlockchainEvent.*
 
@@ -57,7 +57,7 @@ class Blockchain private (chain: Chain, nodeId: NodeId, actorContext: ActorConte
   def eventHandler(state: State, event: BlockchainEvent): State = 
     event match
       case BlockAddedEvent(transactions, proof, timestamp) =>
-        State(ChainLink(state.chain.index + 1, proof, transactions, timestamp = timestamp) :: state.chain)
+        State(ChainLink(state.chain.index.increment(), proof, transactions, timestamp = timestamp) :: state.chain)
   
   def run(): Behavior[BlockchainCommand] =
     EventSourcedBehavior[BlockchainCommand, BlockchainEvent, State](
