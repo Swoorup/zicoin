@@ -1,13 +1,14 @@
 package zicoin
 package actor
 
-import akka.{NotUsed, Done}
-import akka.pattern.StatusReply
 import akka.actor.typed.scaladsl.{ ActorContext, Behaviors, TimerScheduler }
 import akka.actor.typed.{ ActorRef, Behavior }
+import akka.pattern.StatusReply
+import akka.{NotUsed, Done}
 import blockchain.*
-import proof.{ProofOfWork, Proof}
+import common.Hash
 import exception.{InvalidProofException, MinerBusyException}
+import proof.{ProofOfWork, Proof}
 import scala.concurrent.{Future, ExecutionContext}
 
 object Miner: 

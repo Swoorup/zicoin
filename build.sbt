@@ -29,6 +29,13 @@ lazy val root = project
     name := "zicoin",
     version := "0.1.0",
     scalaVersion := scala3Version,
+    scalacOptions ++= Seq(
+        "-deprecation",
+        "-encoding", "UTF-8",
+        "-feature",
+        "-unchecked",
+        // "-language:strictEquality"
+    ),
     testFrameworks += new TestFramework("munit.Framework"),
     libraryDependencies ++= 
       Seq(

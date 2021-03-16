@@ -8,6 +8,7 @@ import io.circe.jawn.decode
 import io.circe.syntax.*
 import io.circe.parser.*
 import crypto.Crypto
+import common.Hash
 import scala.annotation.tailrec
 
 // Allow directly using this object+type without importing ProofOfWork
@@ -20,9 +21,9 @@ object ProofOfWork:
     extension (a: Proof) def value: Long = a
     given (using ev: Encoder[Long]): Encoder[Proof] = ev
 
-  def proofOfWork(lastHash: String): Proof = {
+  def proofOfWork(lastHash: Hash): Proof = {
     @tailrec
-    def powHelper(lastHash: String, proof: Proof): Proof = {
+    def powHelper(lastHash: Hash, proof: Proof): Proof = {
       if (validProof(lastHash, proof))
         proof
       else
@@ -34,8 +35,8 @@ object ProofOfWork:
   }
 
   /// test if the first 4 characters of the hash are zeroes
-  def validProof(lastHash: String, proof: Proof): Boolean = {
-    val guess = (lastHash ++ proof.toString).asJson.toString
+  def validProof(lastHash: Hash, proof: Proof): Boolean = {
+    val guess = (lastHash.value ++ proof.toString).asJson.toString
     val guessHash = Crypto.sha256Hash(guess)
     (guessHash take 4) == "0000"
   }

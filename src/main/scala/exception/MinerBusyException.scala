@@ -1,6 +1,6 @@
 package zicoin
 package exception
 
-import blockchain.Hash
+import common.Hash
 
 case class MinerBusyException(msg: String) extends Exception(msg)

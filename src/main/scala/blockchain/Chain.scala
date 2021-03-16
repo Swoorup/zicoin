@@ -1,11 +1,12 @@
 package zicoin
 package blockchain
 
+import common.{Hash, Timestamp}
 import crypto.Crypto
 import io.circe.generic.semiauto.*
 import io.circe.{Codec, Decoder, Encoder, Json}
 import io.circe.syntax.*
-import zicoin.proof.ProofOfWork.Proof
+import proof.ProofOfWork.Proof
 
 import java.security.InvalidParameterException
 
@@ -32,7 +33,7 @@ object Chain:
 // Also genesis block
 case object EmptyChain extends Chain:
   val index: Int = 0
-  val hash: Hash = "1"
+  val hash: Hash = Hash("1")
   val values: List[Transaction] = Nil
   val proof: Proof = Proof(0)
   val timestamp: Timestamp = 0
@@ -40,11 +41,11 @@ case object EmptyChain extends Chain:
 case class ChainLink( index: Int,
                       proof: Proof,
                       values: List[Transaction],
-                      previousHash: Hash = "",
+                      previousHash: Hash = Hash(""),
                       timestamp: Timestamp = System.currentTimeMillis(),
                       tail: Chain = EmptyChain,
                     ) extends Chain:
-  val hash: Hash = Crypto.sha256Hash(summon[Encoder[ChainLink]](this).asJson.toString)
+  val hash: Hash = Hash(Crypto.sha256Hash(summon[Encoder[ChainLink]](this).asJson.toString))
 
 given Encoder[Chain] = deriveEncoder[Chain]
 given Encoder[ChainLink] = deriveEncoder[ChainLink]

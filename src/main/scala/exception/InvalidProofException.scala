@@ -1,7 +1,7 @@
 package zicoin
 package exception
 
-import blockchain.Hash
+import common.Hash
 import proof.Proof
 
 case class InvalidProofException(

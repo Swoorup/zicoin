@@ -1,4 +1,4 @@
-import crypto.Crypto
+import zicoin.crypto.Crypto
 import play.api.libs.json.*
 import play.api.libs.functional.syntax.*
 

@@ -1,6 +1,7 @@
 package zicoin
 package actor
 
+import common.{Timestamp, Hash}
 import blockchain.*
 import proof.*
 import akka.actor.typed.{ActorRef, Behavior}

@@ -12,6 +12,7 @@ import akka.util.Timeout
 import com.typesafe.config.ConfigFactory
 import exception.*
 import blockchain.*
+import common.*
 import proof.Proof
 
 import scala.concurrent.duration.*
@@ -25,7 +26,7 @@ class BlockchainSuite extends munit.FunSuite:
 
   override def afterAll(): Unit = testKit.shutdownTestKit()
   
-  val txnDate: Long = 1615870157483 // 16/03/2021 - 15:49
+  val txnDate: Timestamp = 1615870157483L // 16/03/2021 - 15:49
   
   test("Correctly initiate an empty Chain") {
     val blockchain = testKit.spawn(Blockchain(EmptyChain, NodeId("test")))
@@ -38,7 +39,7 @@ class BlockchainSuite extends munit.FunSuite:
     probe.expectMessage(1000 millis, 0)
 
     blockchain ! Blockchain.GetLastHash(probe.ref)
-    probe.expectMessage(1000 millis, "1")
+    probe.expectMessage(1000 millis, Hash("1"))
   }
   
   test("correctly add a new block") {
@@ -58,7 +59,7 @@ class BlockchainSuite extends munit.FunSuite:
     probe.expectMessage(1000 millis, 1)
 
     blockchain ! Blockchain.GetLastHash(probe.ref)
-    probe.expectMessage(1000 millis, "9cd156b1af8e8ff6848dd2187a940a079d85da62edc301e0c93bd0582a1fecf3")
+    probe.expectMessage(1000 millis, Hash("9cd156b1af8e8ff6848dd2187a940a079d85da62edc301e0c93bd0582a1fecf3"))
   }
   
   test("correctly recover from a snapshot") {
@@ -69,7 +70,7 @@ class BlockchainSuite extends munit.FunSuite:
     probe.expectMessage(1000 millis, 1)
 
     blockchain ! Blockchain.GetLastHash(probe.ref)
-    probe.expectMessage(1000 millis, "9cd156b1af8e8ff6848dd2187a940a079d85da62edc301e0c93bd0582a1fecf3")
+    probe.expectMessage(1000 millis, Hash("9cd156b1af8e8ff6848dd2187a940a079d85da62edc301e0c93bd0582a1fecf3"))
 
     blockchain ! Blockchain.GetChain(probe.ref)
     val chainlink = probe.expectMessageType[ChainLink](1000 millis)
