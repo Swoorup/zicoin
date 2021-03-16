@@ -1,7 +1,7 @@
 package zicoin
 package proof
 
-import io.circe
+import io.circe.Encoder
 import io.circe.generic.semiauto.*
 import io.circe.syntax
 import io.circe.jawn.decode
@@ -18,6 +18,7 @@ object ProofOfWork:
   object Proof:
     def apply(a: Long): Proof = a
     extension (a: Proof) def value: Long = a
+    given (using ev: Encoder[Long]): Encoder[Proof] = ev
 
   def proofOfWork(lastHash: String): Proof = {
     @tailrec

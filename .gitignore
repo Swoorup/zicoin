@@ -19,5 +19,7 @@ project/plugins/project/
 .bloop/
 .ammonite/
 metals.sbt
+.idea/
+.bsp/
 # End of https://www.toptal.com/developers/gitignore/api/sbt
 

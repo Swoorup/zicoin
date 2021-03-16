@@ -5,13 +5,15 @@ import crypto.Crypto
 import io.circe.generic.semiauto.*
 import io.circe.{Codec, Decoder, Encoder, Json}
 import io.circe.syntax.*
+import zicoin.proof.ProofOfWork.Proof
+
 import java.security.InvalidParameterException
 
 sealed trait Chain: //derives Codec.AsObject:
   val index: Int
   val hash: Hash
   val values: List[Transaction]
-  val proof: Long
+  val proof: Proof
   val timestamp: Long
 
   def ::(link: Chain): Chain = link match
@@ -32,11 +34,11 @@ case object EmptyChain extends Chain:
   val index: Int = 0
   val hash: Hash = "1"
   val values: List[Transaction] = Nil
-  val proof: Long = 0
+  val proof: Proof = Proof(0)
   val timestamp: Long = 0
 
 case class ChainLink( index: Int,
-                      proof: Long,
+                      proof: Proof,
                       values: List[Transaction],
                       previousHash: Hash = "",
                       tail: Chain = EmptyChain,

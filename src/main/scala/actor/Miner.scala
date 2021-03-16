@@ -54,7 +54,7 @@ class Miner private (context: ActorContext[Miner.MinerMessage]):
     }
   }
 
-  def ready(): Behavior[MinerMessage] = Behaviors.receiveMessagePartial { 
+  def ready(): Behavior[MinerMessage] = Behaviors.receiveMessagePartial {
     validate().orElse{
       case Mine(hash, replyTo) => 
         log.info(s"Mining hash $hash...")
