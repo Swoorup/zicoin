@@ -11,6 +11,8 @@ import proof.Proof
 
 class MinerSuite extends munit.FunSuite:
   val testKit = ActorTestKit()
+  
+  override def afterAll(): Unit = testKit.shutdownTestKit()
 
   test("Should be ready when requested") {
     val miner = testKit.spawn(Miner())

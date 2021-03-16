@@ -17,7 +17,7 @@ sealed trait Chain: //derives Codec.AsObject:
   val timestamp: Long
 
   def ::(link: Chain): Chain = link match
-    case l:ChainLink => ChainLink(l.index, l.proof, l.values, this.hash, this)
+    case l:ChainLink => ChainLink(l.index, l.proof, l.values, this.hash, l.timestamp, this)
     case _ => throw new InvalidParameterException("Cannot add invalid link to chain")
 
 object Chain:
@@ -26,7 +26,7 @@ object Chain:
       case Seq() => EmptyChain
       case Seq(l, xs @ _*) =>
         val link = l.asInstanceOf[ChainLink]
-        ChainLink(link.index, link.proof, link.values, link.previousHash, apply(xs:_*))
+        ChainLink(link.index, link.proof, link.values, link.previousHash, link.timestamp, apply(xs:_*))
   }
 
 // Also genesis block
@@ -41,8 +41,8 @@ case class ChainLink( index: Int,
                       proof: Proof,
                       values: List[Transaction],
                       previousHash: Hash = "",
+                      timestamp: Long = System.currentTimeMillis(),
                       tail: Chain = EmptyChain,
-                      timestamp: Long = System.currentTimeMillis()
                     ) extends Chain:
   val hash: Hash = Crypto.sha256Hash(summon[Encoder[ChainLink]](this).asJson.toString)
 
