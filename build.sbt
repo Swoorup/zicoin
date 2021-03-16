@@ -17,7 +17,8 @@ lazy val circeDeps = Seq(
 lazy val akkaDeps = Seq(
   "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
   "com.typesafe.akka" %% "akka-slf4j"       % akkaVersion,
-  "com.typesafe.akka" %% "akka-slf4j"       % akkaVersion,
+  "com.typesafe.akka" %% "akka-persistence-typed" % akkaVersion,
+  "com.typesafe.akka" %% "akka-persistence-testkit" % akkaVersion % Test,
   "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion % Test
 ).map(_.withDottyCompat(scala3Version))
 
