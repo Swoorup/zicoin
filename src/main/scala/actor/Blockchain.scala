@@ -6,7 +6,6 @@ import proof.*
 import akka.actor.typed.{ActorRef, Behavior}
 import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import akka.persistence.typed.PersistenceId
-import Blockchain.{BlockchainCommand, BlockchainEvent, State}
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 
 opaque type NodeId = String
@@ -18,10 +17,10 @@ object Blockchain:
   case class State(chain: Chain)
 
   enum BlockchainEvent: 
-    case BlockAddedEvent(transactions: List[Transaction], proof: Proof, timestamp: Long)
+    case BlockAddedEvent(transactions: List[Transaction], proof: Proof, timestamp: Timestamp)
 
   enum BlockchainCommand:
-    case AddBlockCommand(transactions: List[Transaction], proof: Proof, timestamp: Long, replyTo: ActorRef[Int]) 
+    case AddBlockCommand(transactions: List[Transaction], proof: Proof, timestamp: Timestamp, replyTo: ActorRef[Int]) 
     case GetChain(replyTo: ActorRef[Chain])
     case GetLastHash(replyTo: ActorRef[Hash])
     case GetLastIndex(replyTo: ActorRef[Int])
@@ -33,7 +32,7 @@ object Blockchain:
       new Blockchain(chain, nodeId, ctx).run()
     }
 
-class Blockchain private (chain: Chain, nodeId: NodeId, actorContext: ActorContext[BlockchainCommand]): 
+class Blockchain private (chain: Chain, nodeId: NodeId, actorContext: ActorContext[Blockchain.BlockchainCommand]): 
   import Blockchain.*
   val log = actorContext.log
 

@@ -7,9 +7,7 @@ import akka.actor.typed.{ ActorRef, Behavior }
 import blockchain.*
 
 object Broker:
-  sealed trait BrokerMessage
-
-  enum Command extends BrokerMessage:
+  enum Command:
     case AddTransaction(txn: Transaction)
     case GetTransaction(replyTo: ActorRef[List[Transaction]])
     case Clear()

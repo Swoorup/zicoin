@@ -11,14 +11,16 @@ import exception.{InvalidProofException, MinerBusyException}
 import scala.concurrent.{Future, ExecutionContext}
 
 object Miner: 
-  sealed trait MinerMessage
-
-  enum Command extends MinerMessage: 
+  enum Command:
     case Validate(hash: Hash, proof: Proof, replyTo: ActorRef[StatusReply[Done]]) 
     case Mine(hash: Hash, replyTo: ActorRef[StatusReply[Proof]]) 
   export Command.*
 
-  private case object Ready extends MinerMessage
+  enum PrivateCommand: 
+    case Ready
+  export PrivateCommand.*
+  
+  type MinerMessage = Command | PrivateCommand
 
   def apply(): Behavior[Command] = 
     Behaviors.setup[MinerMessage] { ctx => 

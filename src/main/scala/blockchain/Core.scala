@@ -3,3 +3,4 @@ package blockchain
 
 type Address = String
 type Hash = String
+type Timestamp = Long

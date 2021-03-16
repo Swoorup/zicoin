@@ -14,7 +14,7 @@ sealed trait Chain: //derives Codec.AsObject:
   val hash: Hash
   val values: List[Transaction]
   val proof: Proof
-  val timestamp: Long
+  val timestamp: Timestamp
 
   def ::(link: Chain): Chain = link match
     case l:ChainLink => ChainLink(l.index, l.proof, l.values, this.hash, l.timestamp, this)
@@ -35,13 +35,13 @@ case object EmptyChain extends Chain:
   val hash: Hash = "1"
   val values: List[Transaction] = Nil
   val proof: Proof = Proof(0)
-  val timestamp: Long = 0
+  val timestamp: Timestamp = 0
 
 case class ChainLink( index: Int,
                       proof: Proof,
                       values: List[Transaction],
                       previousHash: Hash = "",
-                      timestamp: Long = System.currentTimeMillis(),
+                      timestamp: Timestamp = System.currentTimeMillis(),
                       tail: Chain = EmptyChain,
                     ) extends Chain:
   val hash: Hash = Crypto.sha256Hash(summon[Encoder[ChainLink]](this).asJson.toString)

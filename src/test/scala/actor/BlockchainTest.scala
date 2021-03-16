@@ -46,7 +46,7 @@ class BlockchainSuite extends munit.FunSuite:
     val probe = testKit.createTestProbe[Chain|Int|Hash]()
 
     // a sends 1L unit to b
-    val transactions = List(Transaction("a", "b", 2L))
+    val transactions = List(Transaction("a", "b", 1L))
     val proof = Proof(1L)
     blockchain ! Blockchain.AddBlockCommand(transactions, proof, txnDate, probe.ref)
     probe.expectMessage(1000 millis, 1)
@@ -58,7 +58,7 @@ class BlockchainSuite extends munit.FunSuite:
     probe.expectMessage(1000 millis, 1)
 
     blockchain ! Blockchain.GetLastHash(probe.ref)
-    probe.expectMessage(1000 millis, "939baab997cfed9830d9dec5ca27a73461e73831dca7770e2d9c68eaced25f70")
+    probe.expectMessage(1000 millis, "9cd156b1af8e8ff6848dd2187a940a079d85da62edc301e0c93bd0582a1fecf3")
   }
   
   test("correctly recover from a snapshot") {
@@ -69,7 +69,7 @@ class BlockchainSuite extends munit.FunSuite:
     probe.expectMessage(1000 millis, 1)
 
     blockchain ! Blockchain.GetLastHash(probe.ref)
-    probe.expectMessage(1000 millis, "939baab997cfed9830d9dec5ca27a73461e73831dca7770e2d9c68eaced25f70")
+    probe.expectMessage(1000 millis, "9cd156b1af8e8ff6848dd2187a940a079d85da62edc301e0c93bd0582a1fecf3")
 
     blockchain ! Blockchain.GetChain(probe.ref)
     val chainlink = probe.expectMessageType[ChainLink](1000 millis)
