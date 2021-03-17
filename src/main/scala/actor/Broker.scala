@@ -9,7 +9,8 @@ import blockchain.*
 object Broker:
   enum Command:
     case AddTransaction(txn: Transaction)
-    case GetTransaction(replyTo: ActorRef[List[Transaction]])
+    case DiffTransaction(externalTransactions: List[Transaction])
+    case GetTransactions(replyTo: ActorRef[List[Transaction]])
     case Clear()
   export Command.*
 
@@ -23,7 +24,10 @@ object Broker:
         pending = txn :: pending 
         log.info(s"Added $txn to pending transactions")
         Behaviors.same
-      case GetTransaction(replyTo) =>
+      case DiffTransaction(externalTransactions) =>
+        pending = pending diff externalTransactions
+        Behaviors.same
+      case GetTransactions(replyTo) =>
         log.info(s"Getting pending transactions")
         replyTo ! pending
         Behaviors.same
