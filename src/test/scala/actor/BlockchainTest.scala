@@ -26,10 +26,11 @@ class BlockchainSuite extends munit.FunSuite:
 
   override def afterAll(): Unit = testKit.shutdownTestKit()
   
+  val testNode = NodeId(Address("test-node"))
   val txnDate: Timestamp = 1615870157483L // 16/03/2021 - 15:49
   
   test("Correctly initiate an empty Chain") {
-    val blockchain = testKit.spawn(Blockchain(EmptyChain, NodeId("test")))
+    val blockchain = testKit.spawn(Blockchain(EmptyChain, testNode))
     val probe = testKit.createTestProbe[Chain|BlockIndex|Hash]()
 
     blockchain ! Blockchain.GetChain(probe.ref)
@@ -43,11 +44,11 @@ class BlockchainSuite extends munit.FunSuite:
   }
   
   test("correctly add a new block") {
-    val blockchain = testKit.spawn(Blockchain(EmptyChain, NodeId("test")))
+    val blockchain = testKit.spawn(Blockchain(EmptyChain, testNode))
     val probe = testKit.createTestProbe[Chain|BlockIndex|Hash]()
 
     // a sends 1L unit to b
-    val transactions = List(Transaction("a", "b", 1L))
+    val transactions = List(Transaction(Address("a"), Address("b"), 1L))
     val proof = Proof(1L)
     blockchain ! Blockchain.AddBlockCommand(transactions, proof, txnDate, probe.ref)
     probe.expectMessage(1000 millis, BlockIndex(1))
@@ -63,7 +64,7 @@ class BlockchainSuite extends munit.FunSuite:
   }
   
   test("correctly recover from a snapshot") {
-    val blockchain = testKit.spawn(Blockchain(EmptyChain, NodeId("test")))
+    val blockchain = testKit.spawn(Blockchain(EmptyChain, testNode))
     val probe = testKit.createTestProbe[Chain|BlockIndex|Hash]()
 
     blockchain ! Blockchain.GetLastIndex(probe.ref)
@@ -74,5 +75,5 @@ class BlockchainSuite extends munit.FunSuite:
 
     blockchain ! Blockchain.GetChain(probe.ref)
     val chainlink = probe.expectMessageType[ChainLink](1000 millis)
-    assertEquals(chainlink.values.head.sender, "a")
+    assertEquals(chainlink.values.head.sender, Address("a"))
   }

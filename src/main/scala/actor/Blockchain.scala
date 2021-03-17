@@ -9,10 +9,8 @@ import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import akka.persistence.typed.PersistenceId
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 
-opaque type NodeId = String
-object NodeId:
-  def apply(a: String): NodeId = a
-  extension (a: NodeId) def persistenceId: String = s"chainer-$a"
+case class NodeId(address: Address):
+  def persistenceId: String = s"chainer-${address.value}"
 
 object Blockchain:
   case class State(chain: Chain)

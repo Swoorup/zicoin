@@ -7,4 +7,4 @@ import io.circe.parser.*
 
 case class Transaction( sender: Address, 
                         recipient: Address, 
-                        value: Long) derives Codec.AsObject
+                        value: Long) derives Encoder.AsObject
