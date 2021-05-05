@@ -1,9 +1,7 @@
 package zicoin
 package common
 
-import io.circe.{Codec, Decoder, Encoder, Json}
+type Timestamp = Long
 
 object Hash extends NewType[String]
 type Hash = Hash.Type
-
-type Timestamp = Long
