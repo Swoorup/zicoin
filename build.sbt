@@ -1,11 +1,11 @@
 import sbt._
 
-val scala3Version = "3.0.0-RC2"
+val scala3Version = "3.0.0"
 
-val circeVersion = "0.14.0-M5"
-val akkaVersion = "2.6.13"
+val circeVersion = "0.14.1"
+val akkaVersion = "2.6.14"
 val akkaHttpVersion = "10.2.4"
-val mUnitVersion = "0.7.23"
+val mUnitVersion = "0.7.26"
 
 lazy val circeDeps = Seq(
   "io.circe" %% "circe-core",
@@ -40,7 +40,6 @@ lazy val root = project
     libraryDependencies ++= 
       Seq(
         "org.scalameta" %% "munit" % mUnitVersion % Test,
-//        "com.typesafe.play" %% "play-json" % "2.10.0-RC2",
         "ch.qos.logback" % "logback-classic" % "1.2.3",
         "com.typesafe" % "config" % "1.4.1"
       ) 
