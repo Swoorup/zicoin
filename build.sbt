@@ -1,11 +1,11 @@
 import sbt._
 
-val scala3Version = "3.0.0"
+val scala3Version = "3.0.2-RC1"
 
 val circeVersion = "0.14.1"
-val akkaVersion = "2.6.14"
+val akkaVersion = "2.6.15"
 val akkaHttpVersion = "10.2.4"
-val mUnitVersion = "0.7.26"
+val mUnitVersion = "0.7.27"
 
 lazy val circeDeps = Seq(
   "io.circe" %% "circe-core",
@@ -16,6 +16,7 @@ lazy val circeDeps = Seq(
 
 lazy val akkaDeps = Seq(
   "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
+  "com.typesafe.akka" %% "akka-cluster-typed" % akkaVersion,
   "com.typesafe.akka" %% "akka-slf4j"       % akkaVersion,
   "com.typesafe.akka" %% "akka-http"        % akkaHttpVersion,
   "com.typesafe.akka" %% "akka-persistence-typed" % akkaVersion,
@@ -35,12 +36,13 @@ lazy val root = project
         "-feature",
         "-unchecked",
         // "-language:strictEquality"
+        "-source:future",
     ),
     testFrameworks += new TestFramework("munit.Framework"),
     libraryDependencies ++= 
       Seq(
         "org.scalameta" %% "munit" % mUnitVersion % Test,
-        "ch.qos.logback" % "logback-classic" % "1.2.3",
+        // "ch.qos.logback" % "logback-classic" % "1.2.4",
         "com.typesafe" % "config" % "1.4.1"
       ) 
       ++ circeDeps

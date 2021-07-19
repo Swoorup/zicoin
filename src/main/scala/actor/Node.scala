@@ -56,7 +56,7 @@ class Node private (nodeId: NodeId,
   import Node.*
 
   implicit lazy val timeout: Timeout = Timeout(5.seconds)
-  implicit val system: ActorSystem[_] = context.system
+  implicit val system: ActorSystem[?] = context.system
   val ignoreRef = system.ignoreRef
   val log = context.log
   
