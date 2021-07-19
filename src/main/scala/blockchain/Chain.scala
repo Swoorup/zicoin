@@ -32,7 +32,7 @@ object Chain:
       case Seq() => EmptyChain
       case Seq(l, xs @ _*) =>
         val link = l.asInstanceOf[ChainLink]
-        ChainLink(link.index, link.proof, link.values, link.previousHash, link.timestamp, apply(xs:_*))
+        ChainLink(link.index, link.proof, link.values, link.previousHash, link.timestamp, apply(xs:*))
   }
 
 // Also genesis block
